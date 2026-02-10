@@ -7,6 +7,7 @@ require (
 	git.sr.ht/~jackmordaunt/go-toast v1.1.2 // indirect
 	github.com/beeper/argo-go v1.1.2 // indirect
 	github.com/coder/websocket v1.8.14 // indirect
+	github.com/eduardolat/openroutergo v0.1.0 // indirect
 	github.com/elliotchance/orderedmap/v3 v3.1.0 // indirect
 	github.com/esiqveland/notify v0.13.3 // indirect
 	github.com/gen2brain/beeep v0.11.2 // indirect
@@ -19,6 +20,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.34 // indirect
 	github.com/mdp/qrterminal/v3 v3.2.1 // indirect
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
+	github.com/orsinium-labs/enum v1.4.0 // indirect
 	github.com/rs/zerolog v1.34.0 // indirect
 	github.com/sergeymakinen/go-bmp v1.0.0 // indirect
 	github.com/sergeymakinen/go-ico v1.0.0-beta.0 // indirect
