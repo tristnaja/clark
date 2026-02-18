@@ -1,7 +1,9 @@
-package main
+package internal
 
 import (
 	"context"
+	_ "embed"
+	"fmt"
 	"strings"
 
 	"github.com/gen2brain/beeep"
@@ -10,6 +12,9 @@ import (
 	"go.mau.fi/whatsmeow/types/events"
 	"google.golang.org/protobuf/proto"
 )
+
+//go:embed utils/clark.png
+var clarkIcon []byte
 
 func sendSelf(cli *whatsmeow.Client, msg string) {
 	targetJID := cli.Store.ID.ToNonAD()
@@ -29,11 +34,20 @@ func EventHandler(waClient *whatsmeow.Client, ast *Assistant) whatsmeow.EventHan
 	return func(evt any) {
 		switch v := evt.(type) {
 		case *events.Message:
+			if v == nil || v.Info.Chat.IsEmpty() || v.Info.Sender.IsEmpty() || v.Message == nil {
+				fmt.Println("Warning: Received nil message data")
+				return
+			}
 			sender := v.Info.Sender.String()
-			relation, isVIP := ast.VIP[sender]
-			userMsg := v.Message.GetConversation()
-			if userMsg == "" {
-				userMsg = v.Message.GetExtendedTextMessage().GetText()
+			relation, isVIP := ast.VIP.CheckVIP(sender)
+
+			var userMsg string
+			if conversation := v.Message.GetConversation(); conversation != "" {
+				userMsg = conversation
+			} else if extendedMessage := v.Message.GetExtendedTextMessage(); extendedMessage != nil {
+				userMsg = extendedMessage.GetText()
+			} else {
+				fmt.Println("Warning: Message has no recognizable content")
 			}
 
 			if !ast.Status || !isVIP || v.Info.IsFromMe || v.Info.IsGroup {
@@ -41,13 +55,18 @@ func EventHandler(waClient *whatsmeow.Client, ast *Assistant) whatsmeow.EventHan
 			}
 
 			if strings.Contains(strings.ToLower(userMsg), "get him to me") {
-				beeep.Alert("Attention Master!", relation+"needs you!", "")
-				sendSelf(waClient, "🚨 Attention Master!"+relation+"needs you!")
+				beeep.Notify("Attention Sir!", relation+" needs you!", clarkIcon)
+				sendSelf(waClient, "🚨 Attention Master!\n"+relation+" needs you!")
 				reply(waClient, v, "I've alerted him. One Moment.")
 				return
 			}
 
-			aiResp := ast.GetAIResponse(sender, userMsg)
+			aiResp, err := ast.GetAIResponse(sender, userMsg)
+			if err != nil {
+				fmt.Printf("AI response error: %v\n", err)
+				reply(waClient, v, "I apologize, but I'm experiencing technical difficulties. Please try again later.")
+				return
+			}
 			reply(waClient, v, aiResp)
 		}
 	}
