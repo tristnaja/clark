@@ -170,18 +170,21 @@ func (ast *Assistant) loadAssistant() error {
 		return fmt.Errorf("Name is empty. Error occured Sir.")
 	}
 
+	ast.Name = name
+
 	if context == "" {
 		return fmt.Errorf("Master Context is empty. Error occured Sir.")
 	}
 
+	ast.MasterContext = context
+
 	statusBool, err := strconv.ParseBool(status)
+
 	if err != nil {
 		return fmt.Errorf("Invalid status value Sir. Error: %w", err)
 	}
 
 	ast.Status = statusBool
-	ast.Name = name
-	ast.MasterContext = context
 
 	return nil
 }

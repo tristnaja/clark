@@ -44,8 +44,10 @@ func EventHandler(waClient *whatsmeow.Client, ast *Assistant) whatsmeow.EventHan
 			var userMsg string
 			if conversation := v.Message.GetConversation(); conversation != "" {
 				userMsg = conversation
-			} else if extendedMessage := v.Message.GetExtendedTextMessage(); extendedMessage != nil {
-				userMsg = extendedMessage.GetText()
+			} else if userMsg == "" {
+				if extendedMessage := v.Message.GetExtendedTextMessage(); extendedMessage != nil {
+					userMsg = extendedMessage.GetText()
+				}
 			} else {
 				fmt.Println("Warning: Message has no recognizable content")
 			}
