@@ -10,13 +10,13 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/mdp/qrterminal"
-	"github.com/tristnaja/clark/internal"
+	"github.com/tristnaja/clark/internal/whatsapp"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/store/sqlstore"
 	waLog "go.mau.fi/whatsmeow/util/log"
 )
 
-func ExecRun(ast *internal.Assistant) error {
+func ExecRun(ast *whatsapp.Assistant) error {
 	available, err := ast.CheckAst()
 
 	if err != nil {
@@ -67,7 +67,7 @@ func ExecRun(ast *internal.Assistant) error {
 	}
 
 	client := whatsmeow.NewClient(deviceStore, waLog.Stdout("Client", "INFO", true))
-	client.AddEventHandler(internal.EventHandler(client, ast))
+	client.AddEventHandler(whatsapp.EventHandler(client, ast))
 
 	if client.Store.ID == nil {
 		fmt.Println("No session found. Please scan QR code.")

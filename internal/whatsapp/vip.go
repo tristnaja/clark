@@ -1,4 +1,4 @@
-package internal
+package whatsapp
 
 import (
 	"context"
@@ -94,6 +94,43 @@ func (vip *VIP) AddVIP(input string) error {
 	query := "INSERT OR REPLACE INTO vip (jid, name, relation) VALUES (?, ?, ?)"
 
 	_, err = vip.DB.DB.ExecContext(ctx, query, jid, name, rel)
+
+	if err != nil {
+		return fmt.Errorf("fail to add new vip: %w", err)
+	}
+
+	err = vip.LoadVIP()
+
+	if err != nil {
+		return fmt.Errorf("fail to load new vip: %w", err)
+	}
+
+	return nil
+}
+
+func (vip *VIP) DeleteVIP(input string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	if len(input) > 100 {
+		return fmt.Errorf("my apologies, Sir, but that entry is far too long to process")
+	}
+
+	if input == "" {
+		return fmt.Errorf("Input is empty sir! Please input the phone number you want to delete")
+	}
+
+	cleaned := strings.TrimPrefix(strings.TrimSpace(input), "+")
+
+	jid, err := sanitizeJID(cleaned)
+
+	if err != nil {
+		return err
+	}
+
+	query := "DELETE FROM vip WHERE jid = ?"
+
+	_, err = vip.DB.DB.ExecContext(ctx, query, jid)
 
 	if err != nil {
 		return fmt.Errorf("fail to add new vip: %w", err)

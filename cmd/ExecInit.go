@@ -1,8 +1,10 @@
 package cmd
 
-import "github.com/tristnaja/clark/internal"
+import (
+	"github.com/tristnaja/clark/internal/whatsapp"
+)
 
-func ExecInit(ast *internal.Assistant) error {
+func ExecInit(ast *whatsapp.Assistant) error {
 	err := ast.AstSettingInit()
 
 	if err != nil {

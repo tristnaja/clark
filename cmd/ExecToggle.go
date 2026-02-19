@@ -3,10 +3,10 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/tristnaja/clark/internal"
+	"github.com/tristnaja/clark/internal/whatsapp"
 )
 
-func ExecToggle(ast *internal.Assistant) error {
+func ExecToggle(ast *whatsapp.Assistant) error {
 	available, err := ast.CheckAst()
 
 	if err != nil {

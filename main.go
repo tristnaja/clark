@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/tristnaja/clark/cmd"
-	"github.com/tristnaja/clark/internal"
+	"github.com/tristnaja/clark/internal/whatsapp"
 )
 
 func main() {
@@ -16,7 +16,7 @@ func main() {
 	commands := map[string]struct{}{
 		"init":   {},
 		"run":    {},
-		"add":    {},
+		"vip":    {},
 		"ctx":    {},
 		"toggle": {},
 		"view":   {},
@@ -38,7 +38,7 @@ func main() {
 		log.Fatalf("usage: clark %v [args]", os.Args[1])
 	}
 
-	ast, err := internal.AssistantInit()
+	ast, err := whatsapp.AssistantInit()
 
 	if err != nil {
 		log.Fatalf("fail to create assistant: %v", err)
@@ -49,8 +49,8 @@ func main() {
 		err = cmd.ExecInit(ast)
 	case "run":
 		err = cmd.ExecRun(ast)
-	case "add":
-		err = cmd.ExecAdd(os.Args[2:], ast)
+	case "vip":
+		err = cmd.ExecVIP(os.Args[2:], ast)
 	case "ctx":
 		err = cmd.ExecContext(os.Args[2:], ast)
 	case "toggle":

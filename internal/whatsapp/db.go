@@ -1,4 +1,4 @@
-package internal
+package whatsapp
 
 import (
 	"context"

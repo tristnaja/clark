@@ -4,22 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/tristnaja/clark/internal"
+	"github.com/tristnaja/clark/internal/whatsapp"
 )
 
-func ExecContext(args []string, ast *internal.Assistant) error {
-	cmd := flag.NewFlagSet("ctx", flag.ContinueOnError)
-	var contex string
-
-	cmd.StringVar(&contex, "ctx", "", "Add Context")
-	cmd.StringVar(&contex, "c", "", "Add Context (Shorthand)")
-
-	err := cmd.Parse(args)
-
-	if err != nil {
-		return err
-	}
-
+func ExecContext(args []string, ast *whatsapp.Assistant) error {
 	available, err := ast.CheckAst()
 
 	if err != nil {
@@ -28,6 +16,18 @@ func ExecContext(args []string, ast *internal.Assistant) error {
 
 	if !available {
 		return fmt.Errorf("No assistant is initiated Sir. Do 'clark init' first.")
+	}
+
+	cmd := flag.NewFlagSet("ctx", flag.ContinueOnError)
+	var contex string
+
+	cmd.StringVar(&contex, "change", "", "Change Context")
+	cmd.StringVar(&contex, "c", "", "Change Context (Shorthand)")
+
+	err = cmd.Parse(args)
+
+	if err != nil {
+		return err
 	}
 
 	err = ast.SetMasterContext(contex)
